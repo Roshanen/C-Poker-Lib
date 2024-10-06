@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define DECK_SIZE 52
 #define MAX_CARDS 2
@@ -29,6 +30,9 @@ typedef struct {
     int cardCount;
 } Player;
 
+int encode(int, int);
+PokerCard decode(int);
+
 void printCard(PokerCard card);
 PokerCard createCard(Suit suit, Rank rank);
 
@@ -36,7 +40,7 @@ void createDeck(PokerCard deck[DECK_SIZE]);
 int checkInDeck(PokerCard deck[DECK_SIZE], PokerCard card);
 PokerCard removeFromDeck(PokerCard deck[DECK_SIZE], PokerCard card);
 
-Player* initPlayers(int n);
+Player *initPlayers(Player**, int n);
 void initPlayerHand(Player* player);
 void giveCard(Player* player, PokerCard card);
 void showPlayerHand(Player* player);
