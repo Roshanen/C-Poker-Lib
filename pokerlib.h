@@ -12,12 +12,18 @@ typedef enum {
     HEARTS,
     DIAMONDS,
     CLUBS,
-    SPADES
+    SPADES,
+    MIN_SUIT = HEARTS,
+    MAX_SUIT = SPADES,
+    NUM_SUIT = 4
 } Suit;
 
 typedef enum {
     ACE = 1, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, 
-    JACK = 11, QUEEN, KING
+    JACK = 11, QUEEN, KING,
+    MIN_RANK = ACE,
+    MAX_RANK = KING,
+    NUM_RANK = 13
 } Rank;
 
 typedef struct {

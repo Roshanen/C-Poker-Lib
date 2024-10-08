@@ -51,6 +51,10 @@ PokerCard createCard(Suit suit, Rank rank)
     return card;
 }
 
+int isValidCard(PokerCard card){
+    return (isInRange(card.suit, MIN_SUIT, MAX_SUIT) && isInRange(card.rank, MIN_RANK, MAX_RANK));
+}
+
 // Loop create cards fit to array size
 void createDeck(PokerCard deck[DECK_SIZE])
 {
