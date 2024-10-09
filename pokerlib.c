@@ -1,4 +1,5 @@
 #include "pokerlib.h"
+#include "utils.h"
 
 // Encode (PokerCard.suit, PokerCard.rank) to 0-51.
 // order is HEARTS, DIAMONDS, CLUBS, SPADES
@@ -51,7 +52,9 @@ PokerCard createCard(Suit suit, Rank rank)
     return card;
 }
 
-int isValidCard(PokerCard card){
+// Check 0 <= card.suit <= 3 and 1 <= card.rank <= 13 
+unsigned char isValidCard(PokerCard card){
+    // debug display
     return (isInRange(card.suit, MIN_SUIT, MAX_SUIT) && isInRange(card.rank, MIN_RANK, MAX_RANK));
 }
 
@@ -60,9 +63,9 @@ void createDeck(PokerCard deck[DECK_SIZE])
 {
     int index = 0;
 
-    for (Suit suit = HEARTS; suit <= SPADES; suit++)
+    for (Suit suit = MIN_SUIT; suit <= MAX_SUIT; suit++)
     {
-        for (Rank rank = ACE; rank <= KING; rank++)
+        for (Rank rank = MIN_RANK; rank <= MAX_RANK; rank++)
         {
             deck[index++] = createCard(suit, rank);
         }
@@ -70,7 +73,7 @@ void createDeck(PokerCard deck[DECK_SIZE])
 }
 
 // Check card exist in deck or not
-int checkInDeck(PokerCard deck[DECK_SIZE], PokerCard card)
+unsigned char checkInDeck(PokerCard deck[DECK_SIZE], PokerCard card)
 {
     for (int i = 0; i < DECK_SIZE; i++)
     {
@@ -82,7 +85,7 @@ int checkInDeck(PokerCard deck[DECK_SIZE], PokerCard card)
     return 0;
 }
 
-// Remove card from deck by replace with card(-1, -1)
+// Remove card from deck by replace with card(-1, -1) then return the card
 PokerCard removeFromDeck(PokerCard deck[DECK_SIZE], PokerCard card)
 {
     PokerCard removedCard = createCard(-1, -1);
@@ -114,7 +117,7 @@ Player *initPlayers(Player **players, int n)
     return *players;
 }
 
-// Init empty hand with (-1,-1)
+// Init players with empty hand (-1,-1)
 void initPlayerHand(Player *player)
 {
     player->cardCount = 0;

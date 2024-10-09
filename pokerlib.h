@@ -41,16 +41,16 @@ PokerCard decode(int);
 
 void printCard(PokerCard card);
 PokerCard createCard(Suit suit, Rank rank);
+unsigned char isValidCard(PokerCard card);
 
 void createDeck(PokerCard deck[DECK_SIZE]);
-int checkInDeck(PokerCard deck[DECK_SIZE], PokerCard card);
+unsigned char checkInDeck(PokerCard deck[DECK_SIZE], PokerCard card);
 PokerCard removeFromDeck(PokerCard deck[DECK_SIZE], PokerCard card);
 
 Player *initPlayers(Player**, int n);
 void initPlayerHand(Player* player);
 void giveCard(Player* player, PokerCard card);
 void showPlayerHand(Player* player);
-void resetPlayers(Player** oldPlayers, int newNPlayers);
 
 int isGameEnd(Player* players, int n);
 
