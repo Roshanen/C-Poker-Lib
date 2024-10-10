@@ -1,23 +1,30 @@
 #include <stdio.h>
 #include <time.h>
 #include "pokerlib.h"
+#include "utils.h"
 
 int main(void)
 {
     srand(time(NULL));
-    PokerCard deck[DECK_SIZE];
+    Deck deck;
+    Board board;
     Player *players = NULL;
     int nPlayers = 0;
 
-    createDeck(deck);
-
     while (1)
     {
-        printf("Enter number of player(s): ");
+        initDeck(&deck);
+        initBoard(&board);
+
+        printf("Enter number of players (0 to exit): ");
         scanf("%d", &nPlayers);
-        if (nPlayers < 1)
-        {
+        if (nPlayers == 0){
             break;
+        }
+        if (!isInRange(nPlayers, 1, 8))
+        {
+            printf("\033[31mInvalid number of players\033[37m\n");
+            continue;
         }
         players = initPlayers(&players, nPlayers);
 
@@ -25,9 +32,15 @@ int main(void)
         {
             for (int j = 0; j < MAX_CARDS; j++)
             {
-                PokerCard card = createCard(SPADES, (Rank)(rand() % 13 + 1));
-                giveCard(&players[i], card);
+                PokerCard card = randInDeck(&deck);
+                givePlayerCard(&players[i], &deck, card);
             }
+        }
+
+        for (int i = 0; i < BOARD_SIZE; i++){
+            PokerCard card = randInDeck(&deck);
+            giveBoardCard(&board, &deck, card);
+            printCard(card);
         }
 
         for (int i = 0; i < nPlayers; i++)
@@ -36,7 +49,7 @@ int main(void)
             showPlayerHand(&players[i]);
         }
     }
-    printf("\nEnd");
+    printf("\033[33mEnd\033[37m\n");
 
     free(players);
     return 0;

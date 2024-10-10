@@ -28,6 +28,19 @@ PokerCard decode(int order)
     return card;
 }
 
+int randSuit(){
+    return rand() % MAX_SUIT;
+}
+
+int randRank(){
+    return (rand() % MAX_RANK) + 1;
+}
+
+PokerCard randCard(){
+    PokerCard card = createCard(randSuit(), randRank());
+    return card;
+}
+
 // Printf cards in hand with "Card: %Rank of %Suit"
 void printCard(PokerCard card)
 {
@@ -53,49 +66,68 @@ PokerCard createCard(Suit suit, Rank rank)
 }
 
 // Check 0 <= card.suit <= 3 and 1 <= card.rank <= 13 
-unsigned char isValidCard(PokerCard card){
+bool isValidCard(PokerCard card){
     // debug display
     return (isInRange(card.suit, MIN_SUIT, MAX_SUIT) && isInRange(card.rank, MIN_RANK, MAX_RANK));
 }
 
 // Loop create cards fit to array size
-void createDeck(PokerCard deck[DECK_SIZE])
+void initDeck(Deck *deck)
 {
-    int index = 0;
-
+    deck->cardCount = 0;
     for (Suit suit = MIN_SUIT; suit <= MAX_SUIT; suit++)
     {
         for (Rank rank = MIN_RANK; rank <= MAX_RANK; rank++)
         {
-            deck[index++] = createCard(suit, rank);
+            deck->cards[deck->cardCount++] = createCard(suit, rank);
         }
     }
+}
+
+void initBoard(Board *board){
+    board->cardCount = 0;
+}
+
+void giveBoardCard(Board *board, Deck *deck, PokerCard card){
+    removeFromDeck(deck, card);
+    board->cards[board->cardCount++] = card;
 }
 
 // Check card exist in deck or not
-unsigned char checkInDeck(PokerCard deck[DECK_SIZE], PokerCard card)
+bool checkInDeck(Deck *deck, PokerCard card)
 {
     for (int i = 0; i < DECK_SIZE; i++)
     {
-        if (deck[i].rank == card.rank && deck[i].suit == card.suit)
+        if (deck->cards[i].rank == card.rank && deck->cards[i].suit == card.suit)
         {
-            return 1;
+            return true;
         }
     }
-    return 0;
+    return false;
+}
+
+PokerCard randInDeck(Deck *deck){
+    PokerCard card = randCard();
+
+    while (!checkInDeck(deck, card))
+    {
+        card = randCard();
+    }
+    return card;
 }
 
 // Remove card from deck by replace with card(-1, -1) then return the card
-PokerCard removeFromDeck(PokerCard deck[DECK_SIZE], PokerCard card)
+PokerCard removeFromDeck(Deck *deck, PokerCard card)
 {
     PokerCard removedCard = createCard(-1, -1);
 
     for (int i = 0; i < DECK_SIZE; i++)
     {
-        if (deck[i].rank == card.rank && deck[i].suit == card.suit)
+        if (deck->cards[i].rank == card.rank && deck->cards[i].suit == card.suit)
         {
-            removedCard = deck[i];
-            deck[i] = createCard(-1, -1);
+            removedCard = deck->cards[i];
+            deck->cards[i] = createCard(-1, -1);
+            deck->cardCount--;
             break;
         }
     }
@@ -128,10 +160,11 @@ void initPlayerHand(Player *player)
 }
 
 // give card to player hard in order if card count < max
-void giveCard(Player *player, PokerCard card)
+void givePlayerCard(Player *player,Deck *deck, PokerCard card)
 {
     if (player->cardCount < MAX_CARDS)
     {
+        removeFromDeck(deck, card);
         player->hand[player->cardCount++] = card;
     }
 }
