@@ -1,9 +1,8 @@
 #include "pokerlib.h"
-#include "utils.h"
 
 // Encode (PokerCard.suit, PokerCard.rank) to 0-51.
 // order is HEARTS, DIAMONDS, CLUBS, SPADES
-int encode(int suit, int rank)
+int encodeDec(int suit, int rank)
 {
     if (suit > 4 || suit < 0 || rank > 13 || rank < 1)
     {
@@ -14,7 +13,7 @@ int encode(int suit, int rank)
 
 // Decode 0-51 to PokerCard
 // order is HEARTS, DIAMONDS, CLUBS, SPADES
-PokerCard decode(int order)
+PokerCard decodeDec(int order)
 {
     PokerCard card;
     if (order > 51 || order < 0)
@@ -28,15 +27,18 @@ PokerCard decode(int order)
     return card;
 }
 
-int randSuit(){
+int randSuit()
+{
     return rand() % MAX_SUIT;
 }
 
-int randRank(){
+int randRank()
+{
     return (rand() % MAX_RANK) + 1;
 }
 
-PokerCard randCard(){
+PokerCard randCard()
+{
     PokerCard card = createCard(randSuit(), randRank());
     return card;
 }
@@ -44,7 +46,8 @@ PokerCard randCard(){
 // Printf cards in hand with "Card: %Rank of %Suit"
 void printCard(PokerCard card)
 {
-    if (card.suit > 3 || card.suit < 0 || card.rank > 13 || card.rank < 1){
+    if (card.suit > 3 || card.suit < 0 || card.rank > 13 || card.rank < 1)
+    {
         printf("\033[31mInvalid Card suit:%d rank:%d\033[37m", card.suit, card.rank);
         return;
     }
@@ -65,8 +68,9 @@ PokerCard createCard(Suit suit, Rank rank)
     return card;
 }
 
-// Check 0 <= card.suit <= 3 and 1 <= card.rank <= 13 
-bool isValidCard(PokerCard card){
+// Check 0 <= card.suit <= 3 and 1 <= card.rank <= 13
+bool isValidCard(PokerCard card)
+{
     // debug display
     return (isInRange(card.suit, MIN_SUIT, MAX_SUIT) && isInRange(card.rank, MIN_RANK, MAX_RANK));
 }
@@ -84,11 +88,13 @@ void initDeck(Deck *deck)
     }
 }
 
-void initBoard(Board *board){
+void initBoard(Board *board)
+{
     board->cardCount = 0;
 }
 
-void giveBoardCard(Board *board, Deck *deck, PokerCard card){
+void giveBoardCard(Board *board, Deck *deck, PokerCard card)
+{
     removeFromDeck(deck, card);
     board->cards[board->cardCount++] = card;
 }
@@ -106,7 +112,8 @@ bool checkInDeck(Deck *deck, PokerCard card)
     return false;
 }
 
-PokerCard randInDeck(Deck *deck){
+PokerCard randInDeck(Deck *deck)
+{
     PokerCard card = randCard();
 
     while (!checkInDeck(deck, card))
@@ -145,6 +152,7 @@ Player *initPlayers(Player **players, int n)
     for (int i = 0; i < n; i++)
     {
         initPlayerHand(&(*players)[i]);
+        (*players)[i].isFold = 0;
     }
     return *players;
 }
@@ -160,7 +168,7 @@ void initPlayerHand(Player *player)
 }
 
 // give card to player hard in order if card count < max
-void givePlayerCard(Player *player,Deck *deck, PokerCard card)
+void givePlayerCard(Player *player, Deck *deck, PokerCard card)
 {
     if (player->cardCount < MAX_CARDS)
     {
@@ -176,6 +184,12 @@ void showPlayerHand(Player *player)
     {
         printCard(player->hand[i]);
     }
+}
+
+// Toggle state isFold of player
+void togglePlayerFold(Player *player)
+{
+    player->isFold = !player->isFold;
 }
 
 // Just test

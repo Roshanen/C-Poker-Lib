@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "utils.h"
 
 #define DECK_SIZE 52
 #define MAX_CARDS 2
@@ -41,6 +42,7 @@ typedef enum
     NUM_RANK = 13
 } Rank;
 
+// { Suit, Rank }
 typedef struct
 {
     Suit suit;
@@ -63,10 +65,11 @@ typedef struct
 {
     PokerCard hand[MAX_CARDS];
     int cardCount;
+    bool isFold;
 } Player;
 
-int encode(int, int);
-PokerCard decode(int);
+int encodeDec(int, int);
+PokerCard decodeDec(int);
 int randSuit();
 int randRank();
 PokerCard randCard();
@@ -86,6 +89,7 @@ Player *initPlayers(Player **, int n);
 void initPlayerHand(Player *player);
 void givePlayerCard(Player *player, Deck *deck, PokerCard card);
 void showPlayerHand(Player *player);
+void togglePlayerFold(Player *player);
 
 int isGameEnd(Player *players, int n);
 
