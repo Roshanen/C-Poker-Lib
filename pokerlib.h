@@ -16,8 +16,6 @@ typedef enum
     DIAMONDS,
     CLUBS,
     SPADES,
-    MIN_SUIT = HEARTS,
-    MAX_SUIT = SPADES,
     NUM_SUIT = 4
 } Suit;
 
@@ -36,8 +34,6 @@ typedef enum
     JACK = 11,
     QUEEN,
     KING,
-    MIN_RANK = ACE,
-    MAX_RANK = KING,
     NUM_RANK = 13
 } Rank;
 
@@ -65,27 +61,25 @@ typedef struct
     int cardCount;
 } Player;
 
-int encode(int, int);
-PokerCard decode(int);
 int randSuit();
 int randRank();
 PokerCard randCard();
 
 void printCard(PokerCard card);
 PokerCard createCard(Suit suit, Rank rank);
-bool isValidCard(PokerCard card);
 
 void initDeck(Deck *deck);
 void initBoard(Board *board);
 bool checkInDeck(Deck *deck, PokerCard card);
 void giveBoardCard(Board *board, Deck *deck, PokerCard card);
+void printBoardCard(Board *board);
 PokerCard randInDeck(Deck *deck);
 PokerCard removeFromDeck(Deck *deck, PokerCard card);
 
 Player *initPlayers(Player **, int n);
 void initPlayerHand(Player *player);
 void givePlayerCard(Player *player, Deck *deck, PokerCard card);
-void showPlayerHand(Player *player);
+void showPlayerHand(Player *player, int pIndex);
 
 int isGameEnd(Player *players, int n);
 

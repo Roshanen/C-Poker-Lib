@@ -1,39 +1,12 @@
 #include "pokerlib.h"
 #include "utils.h"
 
-// Encode (PokerCard.suit, PokerCard.rank) to 0-51.
-// order is HEARTS, DIAMONDS, CLUBS, SPADES
-int encode(int suit, int rank)
-{
-    if (suit > 4 || suit < 0 || rank > 13 || rank < 1)
-    {
-        return -1;
-    }
-    return (suit * 13) + rank - 1;
-}
-
-// Decode 0-51 to PokerCard
-// order is HEARTS, DIAMONDS, CLUBS, SPADES
-PokerCard decode(int order)
-{
-    PokerCard card;
-    if (order > 51 || order < 0)
-    {
-        card = createCard(-1, -1);
-    }
-    else
-    {
-        card = createCard(order / 13, (order % 13) + 1);
-    }
-    return card;
-}
-
 int randSuit(){
-    return rand() % MAX_SUIT;
+    return rand() % SPADES;
 }
 
 int randRank(){
-    return (rand() % MAX_RANK) + 1;
+    return (rand() % KING) + 1;
 }
 
 PokerCard randCard(){
@@ -44,10 +17,6 @@ PokerCard randCard(){
 // Printf cards in hand with "Card: %Rank of %Suit"
 void printCard(PokerCard card)
 {
-    if (card.suit > 3 || card.suit < 0 || card.rank > 13 || card.rank < 1){
-        printf("\033[31mInvalid Card suit:%d rank:%d\033[37m", card.suit, card.rank);
-        return;
-    }
     const char *suits[] = {"Hearts", "Diamonds", "Clubs", "Spades"};
     const char *ranks[] = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
 
@@ -65,19 +34,13 @@ PokerCard createCard(Suit suit, Rank rank)
     return card;
 }
 
-// Check 0 <= card.suit <= 3 and 1 <= card.rank <= 13 
-bool isValidCard(PokerCard card){
-    // debug display
-    return (isInRange(card.suit, MIN_SUIT, MAX_SUIT) && isInRange(card.rank, MIN_RANK, MAX_RANK));
-}
-
 // Loop create cards fit to array size
 void initDeck(Deck *deck)
 {
     deck->cardCount = 0;
-    for (Suit suit = MIN_SUIT; suit <= MAX_SUIT; suit++)
+    for (Suit suit = HEARTS; suit <= SPADES; suit++)
     {
-        for (Rank rank = MIN_RANK; rank <= MAX_RANK; rank++)
+        for (Rank rank = ACE; rank <= KING; rank++)
         {
             deck->cards[deck->cardCount++] = createCard(suit, rank);
         }
@@ -91,6 +54,13 @@ void initBoard(Board *board){
 void giveBoardCard(Board *board, Deck *deck, PokerCard card){
     removeFromDeck(deck, card);
     board->cards[board->cardCount++] = card;
+}
+
+void printBoardCard(Board *board){
+    printf("Community Card\n");
+    for (int i = 0; i < board->cardCount; i++){
+        printCard(board->cards[i]);
+    }
 }
 
 // Check card exist in deck or not
@@ -170,8 +140,9 @@ void givePlayerCard(Player *player,Deck *deck, PokerCard card)
 }
 
 //  Show player hand with printCard()
-void showPlayerHand(Player *player)
+void showPlayerHand(Player *player, int pIndex)
 {
+    printf("Player %d's hand:\n", pIndex + 1);
     for (int i = 0; i < player->cardCount; i++)
     {
         printCard(player->hand[i]);
